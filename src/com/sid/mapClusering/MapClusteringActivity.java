@@ -1,30 +1,17 @@
 package com.sid.mapClusering;
 
 
-import java.io.IOException;
-
-import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.location.LocationManager;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -33,6 +20,7 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 
 public class MapClusteringActivity extends MapActivity implements OnClickListener{
 
@@ -66,6 +54,8 @@ public class MapClusteringActivity extends MapActivity implements OnClickListene
         mapController.setZoom(7);
         GeoPoint geopoint = new GeoPoint(23784756, 90397353);
         mapController.setCenter(geopoint);	    
+        
+        
 	}
 	
 	@Override
@@ -103,10 +93,30 @@ public class MapClusteringActivity extends MapActivity implements OnClickListene
 			toggle_button_handler();
 		}
 		if(v.getId()==R.id.btnCluster){
-			//Toast.makeText(getApplicationContext(), "Do this later!!", Toast.LENGTH_LONG).show();
-			//requestToWeb(mapOverlay);
 			
-			SendPointsAndFetchResult spfr = new SendPointsAndFetchResult(this);
+		/*	
+			List <Overlay> overlayList = mapView.getOverlays();
+			
+			for(int i =0;  i<overlayList.size();i++)
+			{
+				try 
+				{
+					MapOverlay mapOverlay  = (MapOverlay)overlayList.get(i);
+					ArrayList<GeoPoint> points = mapOverlay.gpQueue; 
+					
+					SendPointsAndFetchResult spfr = new SendPointsAndFetchResult(this,points);
+					
+					return ;
+				} 
+				catch (Exception e) 
+				{
+					// TODO: handle exception
+				}
+				
+			}*/
+			
+			
+			Toast.makeText(getApplicationContext(), "Do this later!!", Toast.LENGTH_LONG).show();
 			
 		}
 	}
@@ -117,76 +127,32 @@ public class MapClusteringActivity extends MapActivity implements OnClickListene
 	
 	public void requestToWeb(MapOverlay mapOverlay) {
 		
-		ArrayList<GeoPoint> gpArrayList=mapOverlay.gpQueue;
+	/*	ArrayList<GeoPoint> gpArrayList=mapOverlay.gpQueue;
 		String msg="";
 		
 		for (GeoPoint geoPoint : gpArrayList) {
 			msg+="Lat: "+geoPoint.getLatitudeE6()+" Lon: "+geoPoint.getLongitudeE6()+"\n";
 		}
 		
-		Toast.makeText(getApplicationContext(),gpArrayList.size()+"\n"+msg, Toast.LENGTH_LONG).show();
+		Toast.makeText(getApplicationContext(),gpArrayList.size()+"\n"+msg, Toast.LENGTH_LONG).show();*/
 		
-
-		/*
-		cManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo info=cManager.getActiveNetworkInfo();
-			
-        if(info!=null){
-        	if(info.isAvailable()&&info.isConnected()){
-        		
-        		pd=ProgressDialog.show(MapClusteringActivity.this,"","Posting Data");
-        		PostThread pThread=new PostThread();
-        		pThread.start();
-        	}
-        }
-        */
+		//SendPointsAndFetchResult spfr = new SendPointsAndFetchResult(this,mapOverlay);
+		
 	}
 	
-	
-	class PostThread extends Thread{
+	public void showPoints(ArrayList<GeoPoint> locationResult){
 		
-    	public void run(){
-    		//do post request
-    		DefaultHttpClient client=new DefaultHttpClient();
-    		HttpPost post=new HttpPost("http://10.0.2.2/user_tracking/index.php/user/showCordinates");
-    		List pairs=new ArrayList();
-    		
-    		pairs.add(new BasicNameValuePair("name","sid"));
-    		
-    		try {
-				post.setEntity(new UrlEncodedFormEntity(pairs));
-				ResponseHandler<String> respHandler=new BasicResponseHandler();
-				String response=client.execute(post,respHandler);
-				if(response.equalsIgnoreCase("success")){
-					postHandler.sendEmptyMessage(1);
-				}
-				else{
-					postHandler.sendEmptyMessage(0);
-				}
-				
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-				postHandler.sendEmptyMessage(0);
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-				postHandler.sendEmptyMessage(0);
-			} catch (IOException e) {
-				e.printStackTrace();
-				postHandler.sendEmptyMessage(0);
-			}
-    	}
-    }
-    
-    Handler postHandler=new Handler(){
-    	public void handleMessage(android.os.Message msg) {
-    		pd.dismiss();
-    		if(msg.what==0){
-    			Toast.makeText(getApplicationContext(), "Request FAiled", Toast.LENGTH_LONG).show();
-    		}
-    		else{
-    			Toast.makeText(getApplicationContext(), "Successfully Data Inserted", Toast.LENGTH_LONG).show();
-    		}
-    	}
-    };
+		
+	    Drawable markar=getResources().getDrawable(R.drawable.icon);
+        MyItemizedOverlay myoverlay=new MyItemizedOverlay(markar,this);
+        
+        for (GeoPoint geoPoint : locationResult) {
+        	OverlayItem item=new OverlayItem(geoPoint, "Hello", "I am sid");
+        	myoverlay.addOverlayItem(item);
+		}
+        
+        mapView.getOverlays().add(myoverlay);
+	
+	}
     
 }

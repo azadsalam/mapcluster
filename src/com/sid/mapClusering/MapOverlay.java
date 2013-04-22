@@ -133,7 +133,8 @@ public class MapOverlay extends Overlay {
 	        if (e.getAction() == MotionEvent.ACTION_UP) {                
 	            isUp = true;
 	            
-	            mv.requestToWeb(this);
+	            //mv.showPoints(gpQueue);
+	            SendPointsAndFetchResult spfr = new SendPointsAndFetchResult(mv,mv,gpQueue);
 	            
 	        }    
 	        return true;

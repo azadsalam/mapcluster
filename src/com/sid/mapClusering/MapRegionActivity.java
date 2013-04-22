@@ -30,8 +30,7 @@ public class MapRegionActivity extends MapActivity {
         
 
         mapController.setZoom(7);
-        
-       
+ 
         mapOverlays = mapView.getOverlays();
         
         Drawable drawable = this.getResources().getDrawable(R.drawable.green_point);
