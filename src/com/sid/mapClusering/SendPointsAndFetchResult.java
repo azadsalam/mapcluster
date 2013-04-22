@@ -47,7 +47,7 @@ public class SendPointsAndFetchResult implements WebServiceUser {
 		data.put("points", polygon);
 
 		wsu = new WebServiceAdapter(this, context, "Calculating!!",
-				Values.baseUrl + "user/checkPoints", data, replyTokens);
+				Values.baseUrl + "mappoint/checkPoints", data, replyTokens);
 		wsu.startWebService();
 	}
 
