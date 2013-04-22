@@ -57,7 +57,8 @@ public class SendPointsAndFetchResult implements WebServiceUser {
 		if (data != null) {
 			// Toast.makeText(context, data.get(replyTokens[0]).toString(),
 			// Toast.LENGTH_LONG).show();
-
+			
+			
 			try 
 			{
 				String rep = (String)data.get(replyTokens[0]);
